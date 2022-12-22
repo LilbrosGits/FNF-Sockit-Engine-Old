@@ -1,0 +1,10 @@
+{
+    "menuLayout": [
+        "story mode", 
+        "freeplay", 
+        "donate", 
+        "options"
+    ],
+    "menuPosition": [0, 0],
+    "alignment": "CENTER"
+}

@@ -1,0 +1,4 @@
+export/
+.vscode/
+sockit.code-workspace
+APIStuff.hx

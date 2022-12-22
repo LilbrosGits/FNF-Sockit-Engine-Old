@@ -1,0 +1,13 @@
+{	
+	"gfX":512,
+	"gfY":40,
+	"titleX":-150,
+	"titleY":-100,
+	"pressEnterX":100,
+	"pressEnterY":576,
+	"bgImage":"",
+	"associations": false,
+	"text": ["lilbros", "presents", "not associated with", "newgrounds"],
+	"title": ["FNF", "Sockit", "Engine"],
+	"bpm":102
+}
