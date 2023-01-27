@@ -53,6 +53,7 @@ As for Mac, 'lime test mac -debug' should work, if not the internet surely has a
 ### Recommended	IDE'S/Code Editors
 
 Visual Studio Code
+
 HaxeDevelop (Only for Windows)
 
 First run limes setup for flixel
