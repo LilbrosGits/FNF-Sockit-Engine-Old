@@ -1,0 +1,41 @@
+{
+    "weeks":
+    {
+        "songs": [
+        ["Tutorial"],
+        ["Bopeebo", "Fresh", "Dad-battle"],
+        ["Spookeez", "South", "Monster"],
+        ["Pico", "Philly-Nice", "Blammed"],
+        ["Satin-Panties", "High", "Milf"],
+        ["Cocoa", "Eggnog", "Winter-Horrorland"],
+        ["Senpai", "Roses", "Thorns"],
+        ["Ugh", "Guns", "Stress"]
+        ],
+
+        "characters": [
+        ["dad", "bf", "gf"],
+        ["dad", "bf", "gf"],
+        ["spooky", "bf", "gf"],
+        ["pico", "bf", "gf"],
+        ["mom", "bf", "gf"],
+        ["parents-christmas", "bf", "gf"],
+        ["senpai", "bf", "gf"],
+        ["tankman", "bf", "gf"]
+        ],
+
+        "weekImages": ["week0", "week1", "week2", "week3", "week4", "week5", "week6", "week7"]
+    },
+
+    "weekNames": [
+    "Tutorial",
+    "Daddy Dearest",
+    "Spooky Month",
+    "PICO",
+    "MOMMY MUST MURDER",
+    "RED SNOW",
+    "hating simulator ft. moawling",
+    "TANKMAN"
+    ],
+
+    "unlockedWeeks": [true, true, true, true, true, true, true, true, true]
+}

@@ -21,8 +21,9 @@ using StringTools;
 
 typedef WeekData = 
 {
-	songs:Array<Dynamic>,
-	characters:Array<Dynamic>
+	songs:Array<Array<String>>,
+	characters:Array<Array<String>>,
+	weekImages:Array<String>
 }
 
 typedef Week =
@@ -63,7 +64,7 @@ class StoryMenuState extends MusicBeatState
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
-		weekJSON = Json.parse(Paths.getTextFromFile('data/weeks.json'));
+		weekJSON = Json.parse(Paths.getTextFromFile('weeks.json'));
 
 		if (FlxG.sound.music != null)
 		{
@@ -107,8 +108,7 @@ class StoryMenuState extends MusicBeatState
 		DiscordClient.changePresence("In the Menus", null);
 		#end
 
-		for (i in 0...weekJSON.weeks.songs.length)
-		{
+		for (i in 0...weekJSON.weeks.weekImages.length) {
 			var weekThing:MenuItem = new MenuItem(0, weekBG.y + weekBG.height + 10, i);
 			weekThing.y += ((weekThing.height + 20) * i);
 			weekThing.targetY = i;
@@ -116,10 +116,12 @@ class StoryMenuState extends MusicBeatState
 
 			weekThing.screenCenter(X);
 			weekThing.antialiasing = OptionHandler.aliasing;
-			// weekThing.updateHitbox();
+		}
 
+		for (i in 0...weekJSON.weeks.songs.length)
+		{
 			// Needs an offset thingie
-			if (!weekJSON.unlockedWeeks[i])
+			/*if (!weekJSON.unlockedWeeks[i])
 			{
 				var lock:FlxSprite = new FlxSprite(weekThing.width + 10 + weekThing.x);
 				lock.frames = ui_tex;
@@ -128,14 +130,14 @@ class StoryMenuState extends MusicBeatState
 				lock.ID = i;
 				lock.antialiasing = OptionHandler.aliasing;
 				grpLocks.add(lock);
-			}
+			}*/
 		}
 
 		trace("Line 96");
 
 		for (char in 0...3)
 		{
-			var weekCharacterThing:MenuCharacter = new MenuCharacter((FlxG.width * 0.25) * (1 + char) - 150, weekJSON.weeks.characters[char]);
+			var weekCharacterThing:MenuCharacter = new MenuCharacter((FlxG.width * 0.25) * (1 + char) - 150, weekJSON.weeks.characters[curWeek][char]);
 			weekCharacterThing.y += 70;
 			grpWeekCharacters.add(weekCharacterThing);
 		}
@@ -287,14 +289,16 @@ class StoryMenuState extends MusicBeatState
 			switch (curDifficulty)
 			{
 				case 0:
-					diffic = '-easy';
+					diffic = 'easy';
+				case 1:
+					diffic = 'normal';
 				case 2:
-					diffic = '-hard';
+					diffic = 'hard';
 			}
 
 			PlayState.storyDifficulty = curDifficulty;
 
-			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + diffic, PlayState.storyPlaylist[0].toLowerCase());
+			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase(), diffic);
 			PlayState.storyWeek = curWeek;
 			PlayState.campaignScore = 0;
 			new FlxTimer().start(1, function(tmr:FlxTimer)

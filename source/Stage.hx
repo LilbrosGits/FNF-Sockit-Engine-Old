@@ -6,8 +6,9 @@ import flixel.system.FlxSound;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.effects.chainable.FlxWaveEffect;
 import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 
-class Stage extends MusicBeatSubstate
+class Stage extends MusicBeatState.MusicBeatSubstate
 {
 	var halloweenBG:FlxSprite;
     var limo:FlxSprite;
@@ -30,6 +31,11 @@ class Stage extends MusicBeatSubstate
 	var trainCooldown:Int = 0;
     var daStage:String;
     var startedMoving:Bool = false;
+    public var camZoom:Float = 1.05;
+    var tankWatchtower:FlxSprite;
+	var tankGround:FlxSprite;
+	//var tankmanRun:FlxTypedGroup<TankmenBG>;
+	var foregroundSprites:FlxTypedGroup<FlxSprite>;
 
     public function new(stage:String)
     {
@@ -78,9 +84,11 @@ class Stage extends MusicBeatSubstate
             }
     
                 var streetBehind:FlxSprite = new FlxSprite(-40, 50).loadGraphic(Paths.image('backgrounds/' + stage + '/behindTrain'));
+                streetBehind.antialiasing = OptionHandler.aliasing;
                 add(streetBehind);
     
                 phillyTrain = new FlxSprite(2000, 360).loadGraphic(Paths.image('backgrounds/' + stage + '/train'));
+                phillyTrain.antialiasing = OptionHandler.aliasing;
                 add(phillyTrain);
     
                 trainSound = new FlxSound().loadEmbedded(Paths.sound('train_passes'));
@@ -93,7 +101,7 @@ class Stage extends MusicBeatSubstate
             }
             case 'limo':
             {
-                PlayState.defaultCamZoom = 0.90;
+                camZoom = 0.9;
     
                 var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic(Paths.image('backgrounds/' + stage + '/limoSunset'));
                 skyBG.scrollFactor.set(0.1, 0.1);
@@ -131,13 +139,14 @@ class Stage extends MusicBeatSubstate
                 add(fastCar);
     
                 add(limo);
+
+                resetFastCar();
     
-                PlayState.boyfriend.y -= 220;
-                PlayState.boyfriend.x += 260;
+                PlayState.SONG.gfVersion = 'gf-car';
                 }
                 case 'mall':
                 {
-                    PlayState.defaultCamZoom = 0.80;
+                    camZoom = 0.8;
     
                     var bg:FlxSprite = new FlxSprite(-1000, -500).loadGraphic(Paths.image('backgrounds/' + stage + '/bgWalls'));
                     bg.antialiasing = OptionHandler.aliasing;
@@ -188,8 +197,7 @@ class Stage extends MusicBeatSubstate
                     santa.animation.addByPrefix('idle', 'santa idle in fear', 24, false);
                     santa.antialiasing = OptionHandler.aliasing;
                     add(santa);
-    
-                    PlayState.boyfriend.x += 200;
+                    PlayState.SONG.gfVersion = 'gf-christmas';
                 }
                 case 'mallEvil':
                 {
@@ -209,12 +217,11 @@ class Stage extends MusicBeatSubstate
                     var evilSnow:FlxSprite = new FlxSprite(-200, 700).loadGraphic(Paths.image('backgrounds/' + stage + "/evilSnow"));
                     evilSnow.antialiasing = OptionHandler.aliasing;
                     add(evilSnow);
-    
-                    PlayState.boyfriend.x += 320;
-                    PlayState.dad.y -= 80;
+                    PlayState.SONG.gfVersion = 'gf-christmas';
                 }
                 case 'school':
                 {
+                    PlayState.SONG.gfVersion = 'gf-pixel';
                     var bgSky = new FlxSprite().loadGraphic(Paths.image('backgrounds/' + stage + '/weebSky'));
                     bgSky.scrollFactor.set(0.1, 0.1);
                     add(bgSky);
@@ -270,14 +277,11 @@ class Stage extends MusicBeatSubstate
                     bgGirls.setGraphicSize(Std.int(bgGirls.width * PlayState.daPixelZoom));
                     bgGirls.updateHitbox();
                     add(bgGirls);
-    
-                    PlayState.boyfriend.x += 200;
-                    PlayState.boyfriend.y += 220;
-                    PlayState.gf.x += 180;
-                    PlayState.gf.y += 300;
                 }
                 case 'schoolEvil':
                 {
+                    PlayState.SONG.gfVersion = 'gf-pixel';
+
                     var waveEffectBG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 3, 2);
                     var waveEffectFG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 5, 2);
     
@@ -291,15 +295,10 @@ class Stage extends MusicBeatSubstate
                     bg.scrollFactor.set(0.8, 0.9);
                     bg.scale.set(6, 6);
                     add(bg);
-    
-                    PlayState.boyfriend.x += 200;
-                    PlayState.boyfriend.y += 220;
-                    PlayState.gf.x += 180;
-                    PlayState.gf.y += 300;
                 }
                 case 'stage':
                 {
-                    PlayState.defaultCamZoom = 0.9;
+                    camZoom = 0.9;
                     var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('backgrounds/' + stage + '/stageback'));
                     bg.antialiasing = OptionHandler.aliasing;
                     bg.scrollFactor.set(0.9, 0.9);
@@ -323,24 +322,106 @@ class Stage extends MusicBeatSubstate
     
                     add(stageCurtains);
                 }
+                case 'tank':
+                {
+                    var sky:FlxSprite = new FlxSprite(-400, -400).loadGraphic(Paths.image('backgrounds/' + stage + '/tankSky'));
+                    sky.antialiasing = OptionHandler.aliasing;
+                    sky.scrollFactor.set(0, 0);
+                    sky.antialiasing = OptionHandler.aliasing;
+                    add(sky);
+
+                    var clouds:FlxSprite = new FlxSprite(FlxG.random.int(-700, -100), FlxG.random.int(-20, 20)).loadGraphic(Paths.image('backgrounds/' + stage + '/tankClouds'));
+                    clouds.antialiasing = OptionHandler.aliasing;
+                    clouds.scrollFactor.set(0.1, 0.1);
+                    clouds.active = true;
+					clouds.velocity.x = FlxG.random.float(5, 15);
+                    clouds.antialiasing = OptionHandler.aliasing;
+                    add(clouds);
+
+                    var mountains:FlxSprite = new FlxSprite(-300, -20).loadGraphic(Paths.image('backgrounds/' + stage + '/tankMountains'));
+                    mountains.antialiasing = OptionHandler.aliasing;
+                    mountains.scrollFactor.set(0.2, 0.2);
+                    mountains.setGraphicSize(Std.int(1.2 * mountains.width));
+                    mountains.antialiasing = OptionHandler.aliasing;
+                    add(mountains);
+
+                    var buildings:FlxSprite = new FlxSprite(-200, 0).loadGraphic(Paths.image('backgrounds/' + stage + '/tankBuildings'));
+                    buildings.antialiasing = OptionHandler.aliasing;
+                    buildings.scrollFactor.set(0.3, 0.3);
+                    buildings.setGraphicSize(Std.int(1.1 * buildings.width));
+                    mountains.antialiasing = OptionHandler.aliasing;
+                    add(buildings);
+
+                    var ruins:FlxSprite = new FlxSprite(-200, 0).loadGraphic(Paths.image('backgrounds/' + stage + '/tankRuins'));
+                    ruins.setGraphicSize(Std.int(1.1 * ruins.width));
+                    ruins.scrollFactor.set(.35,.35);
+                    ruins.antialiasing = OptionHandler.aliasing;
+                    add(ruins);
+
+                    var smokeLeft:FlxSprite = new FlxSprite(-200, -100);
+                    smokeLeft.frames = Paths.getSparrowAtlas('backgrounds/' + stage + '/smokeLeft');
+                    smokeLeft.animation.addByPrefix('garcello', 'SmokeBlurLeft instance 1', 24, true);
+                    smokeLeft.scrollFactor.set(0.4, 0.4);
+                    smokeLeft.antialiasing = OptionHandler.aliasing;
+                    add(smokeLeft);
+                    smokeLeft.animation.play('garcello');
+
+                    var smokeRight:FlxSprite = new FlxSprite(1100, -100);
+                    smokeRight.frames = Paths.getSparrowAtlas('backgrounds/' + stage + '/smokeRight');
+                    smokeRight.animation.addByPrefix('otherGarello', 'SmokeRight instance 1', 24, true);
+                    smokeRight.scrollFactor.set(0.4, 0.4);
+                    smokeRight.antialiasing = OptionHandler.aliasing;
+                    add(smokeRight);
+                    smokeRight.animation.play('otherGarello');
+
+                    var ground:FlxSprite = new FlxSprite(-420, -150).loadGraphic(Paths.image('backgrounds/' + stage + '/tankGround'));
+                    ground.setGraphicSize(Std.int(1.15 * ground.width));
+                    ground.updateHitbox();
+                    ground.antialiasing = OptionHandler.aliasing;
+                    add(ground);
+                }
             }
         }
 
+        function resetFastCar():Void
+        {
+            fastCar.x = -12600;
+            fastCar.y = FlxG.random.int(140, 250);
+            fastCar.velocity.x = 0;
+            fastCarCanDrive = true;
+        }
+    
+        function fastCarDrive()
+        {
+            FlxG.sound.play(Paths.soundRandom('carPass', 0, 1), 0.7);
+    
+            fastCar.velocity.x = (FlxG.random.int(170, 220) / FlxG.elapsed) * 3;
+            fastCarCanDrive = false;
+            new FlxTimer().start(2, function(tmr:FlxTimer)
+            {
+                resetFastCar();
+            });
+        } 
                 
         public function stageUpdate(curBeat:Int, boyfriend:Boyfriend, gf:Character, dadOpponent:Character)
             {
                 // trace('update backgrounds');
                 switch (PlayState.curStage)
                 {
-                    case 'highway':
+                    case 'limo':
                         // trace('highway update');
                         grpLimoDancers.forEach(function(dancer:BackgroundDancer)
                         {
                             dancer.dance();
                         });
+                        if (FlxG.random.bool(10) && fastCarCanDrive)
+                            fastCarDrive();
                     case 'mall':
-                        upperBoppers.animation.play('bop', true);
-                        bottomBoppers.animation.play('bop', true);
+                        if (!OptionHandler.optimized)
+                        {
+                            upperBoppers.animation.play('bop', true);
+                            bottomBoppers.animation.play('bop', true);
+                        }
                         santa.animation.play('idle', true);
         
                     case 'school':
@@ -379,6 +460,11 @@ class Stage extends MusicBeatSubstate
                         {
                             trainCooldown = FlxG.random.int(-4, 0);
                             trainStart();
+                        }
+                    case 'spooky':
+                        if (curBeat % 8 == 4)
+                        {
+                            halloweenBG.animation.play('lightning');
                         }
                 }
             }

@@ -47,6 +47,7 @@ class AtlasFrameMaker extends FlxFramesCollection
 
 		if (Paths.fileExists('images/$key/spritemap1.json', TEXT))
 		{
+			trace("Only Spritemaps made with Adobe Animate 2018 are supported");
 			return null;
 		}
 

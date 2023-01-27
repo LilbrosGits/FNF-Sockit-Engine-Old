@@ -1,6 +1,6 @@
 package;
 
-import Section.SwagSection;
+import ChartParser.SwagSection;
 import haxe.Json;
 import haxe.format.JsonParser;
 import lime.utils.Assets;
@@ -21,7 +21,7 @@ typedef SwagSong =
 	var bpm:Int;
 	var needsVoices:Bool;
 	var speed:Float;
-
+	var gfVersion:String;
 	var player1:String;
 	var player2:String;
 	var validScore:Bool;
@@ -36,7 +36,7 @@ class Song
 	public var bpm:Int;
 	public var needsVoices:Bool = true;
 	public var speed:Float = 1;
-
+	public var gfVersion:String = 'gf';
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';
 
@@ -47,18 +47,15 @@ class Song
 		this.bpm = bpm;
 	}
 
-	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
+	public static function loadFromJson(folder:String, difficulty:String):SwagSong
 	{
 		var rawJson = null;
-		
-		var formattedFolder:String = Paths.formatToSongPath(folder);
-		var formattedSong:String = Paths.formatToSongPath(jsonInput);
 
 		if(rawJson == null) {
 			#if sys
-			rawJson = File.getContent(Paths.json(formattedFolder + '/' + formattedSong)).trim();
+			rawJson = File.getContent(Paths.json(folder + '/' + difficulty)).trim();
 			#else
-			rawJson = Assets.getText(Paths.json(formattedFolder + '/' + formattedSong)).trim();
+			rawJson = Assets.getText(Paths.json(folder + '/' + difficulty)).trim();
 			#end
 		}
 

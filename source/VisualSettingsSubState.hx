@@ -31,39 +31,46 @@ class VisualSettingsSubState extends OptionsState
 {
 	public function new()
 	{
-		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
-		var option:Option = new Option('Anti-Aliasing', //Name
-		'Way better preformance with less good visuals.', //Description
-		'aliasing', //Save data variable name
-		'bool', //Variable type
-		false); //Default value
+		var option:Option = new Option('Anti-Aliasing',
+		'Way better preformance with less good visuals.',
+		'aliasing',
+		'bool',
+		false);
 		addOption(option);
 
-		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
-		var option:Option = new Option('Note Splashes', //Name
-		'Makes the notes splash whenever you get a SICK rating.', //Description
-		'splashes', //Save data variable name
-		'bool', //Variable type
-		true); //Default value
+		var option:Option = new Option('Note Splashes',
+		'Makes the notes splash whenever you get a SICK rating.',
+		'splashes',
+		'bool',
+		true);
 		addOption(option);
 
-		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
-		var option:Option = new Option('Strumline Alpha', //Name
-		'Changes the opacity of the Strumline', //Description
-		'strumAlpha', //Save data variable name
-		'float', //Variable type
-		100); //Default value
+		var option:Option = new Option('Strumline Alpha',
+		'Changes the opacity of the Strumline',
+		'strumAlpha',
+		'float',
+		100);
 		option.minValue = 0.1;
 		option.maxValue = 1;
 		option.changeValue = 0.1;
 		addOption(option);
 
-		/*var option:Option = new Option('Shaders', //Name
-		'Use Shaders to Increase the Cool Looks! at the cost of fps tho.', //Description
-		'shaders', //Save data variable name
-		'bool', //Variable type
-		false); //Default value
-		addOption(option);*/
+		var option:Option = new Option('Optimizational Features', //Name
+		'Makes The Game Run Better By Removing Certain Features', //Description
+		'optimized',
+		'bool',
+		true);
+		addOption(option);
+
+		var option:Option = new Option('Strumline Lane Alpha',
+		'If the alpha is greater than 0 you \nwill have a strumline lane',
+		'strumLaneAlpha',
+		'float',
+		100);
+		option.minValue = 0;
+		option.maxValue = 1;
+		option.changeValue = 0.1;
+		addOption(option);
 
 		/*var option:Option = new Option('Score Bar Layout',
 		"How will the score bar look?",

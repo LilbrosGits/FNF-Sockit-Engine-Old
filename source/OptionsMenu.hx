@@ -13,6 +13,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxSubState;
+import flixel.addons.transition.FlxTransitionableState;
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -27,7 +28,7 @@ import Controls.Control;
 
 using StringTools;
 
-class OptionsMenu extends MusicBeatSubstate
+class OptionsMenu extends MusicBeatState
 {
 	var options:Array<String> = ['Preferences', 'Appearance'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
@@ -47,6 +48,9 @@ class OptionsMenu extends MusicBeatSubstate
 		#if desktop
 		DiscordClient.changePresence("Options Menu", null);
 		#end
+
+		transIn = FlxTransitionableState.defaultTransIn;
+		transOut = FlxTransitionableState.defaultTransOut;
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBGBlue'));
 		bg.updateHitbox();

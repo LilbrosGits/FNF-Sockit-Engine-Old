@@ -15,7 +15,7 @@ class CoolUtil
 
 	public static var difficulties:Array<String> = [];
 
-	public static function getDifficultyFilePath(num:Null<Int> = null)
+	/*public static function getDifficultyFilePath(num:Null<Int> = null)
 	{
 		if(num == null) num = PlayState.storyDifficulty;
 
@@ -29,7 +29,7 @@ class CoolUtil
 			fileSuffix = '';
 		}
 		return Paths.formatToSongPath(fileSuffix);
-	}
+	}*/
 
 	public static function difficultyString():String
 	{
@@ -77,6 +77,19 @@ class CoolUtil
 
 		return daList;
 	}
+
+	public static function getOffsetsFromTxt(path:String):Array<Array<String>>
+	{
+		var fullText:String = Assets.getText(path);
+
+		var firstArray:Array<String> = fullText.split('\n');
+		var swagOffsets:Array<Array<String>> = [];
+
+		for (i in firstArray)
+			swagOffsets.push(i.split(' '));
+
+		return swagOffsets;
+	}	
 
 	public static function listFromString(string:String):Array<String>
 	{

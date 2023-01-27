@@ -15,7 +15,10 @@ class OptionHandler {
 	public static var autoplay:Bool = false;
 	public static var splashes:Bool = true;
 	public static var strumAlpha:Float = 1;
-
+	public static var debLogs:Bool = false;
+	public static var optimized:Bool = true;
+	public static var strumLaneAlpha:Float = 0;
+	public static var instRespawn:Bool = false;
 	public static function saveSettings()  {
 		FlxG.save.data.aliasing = aliasing;
 		FlxG.save.data.frames = safeFrames;
@@ -25,6 +28,10 @@ class OptionHandler {
 		FlxG.save.data.autoplay = autoplay;
 		FlxG.save.data.noteSplashes = splashes;
 		FlxG.save.data.strumAlpha = strumAlpha;
+		FlxG.save.data.debLogs = debLogs;
+		FlxG.save.data.optimized = optimized;
+		FlxG.save.data.strumLaneAlpha = strumLaneAlpha;
+		FlxG.save.data.instRespawn = instRespawn;
 		
 		FlxG.save.flush();
 	}
@@ -60,6 +67,26 @@ class OptionHandler {
 		}
 		if(FlxG.save.data.strumAlpha != null) {
 			strumAlpha = FlxG.save.data.strumAlpha;
+		}
+		if(FlxG.save.data.debLogs != null) {
+			debLogs = FlxG.save.data.debLogs;
+		}
+		if(FlxG.save.data.optimized != null) {
+			optimized = FlxG.save.data.optimized;
+		}
+		if (FlxG.save.data.volume != null)
+		{
+			FlxG.sound.volume = FlxG.save.data.volume;
+		}
+		if (FlxG.save.data.mute != null)
+		{
+			FlxG.sound.muted = FlxG.save.data.mute;
+		}
+		if(FlxG.save.data.strumLaneAlpha != null) {
+			strumLaneAlpha = FlxG.save.data.strumLaneAlpha;
+		}
+		if(FlxG.save.data.instRespawn != null) {
+			instRespawn = FlxG.save.data.instRespawn;
 		}
 	}
 }

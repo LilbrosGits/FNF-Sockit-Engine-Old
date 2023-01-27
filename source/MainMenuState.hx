@@ -105,8 +105,6 @@ class MainMenuState extends MusicBeatState
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 
-		// NG.core.calls.event.logEvent('swag').send();
-
 		changeItem();
 
 		super.create();
@@ -189,6 +187,10 @@ class MainMenuState extends MusicBeatState
 					});
 				}
 			}
+		}
+
+		if (FlxG.keys.justPressed.SEVEN) {
+			FlxG.switchState(new JSONDataTest());
 		}
 
 		super.update(elapsed);

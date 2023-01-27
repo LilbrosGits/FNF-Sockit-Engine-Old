@@ -47,9 +47,9 @@ class StageEditor extends FlxTypedGroup<FlxBasic>
 
         stageName = stageJSON.stage;
 
-        if (Assets.exists(Paths.getPath('images/backgrounds/' + stageName + '/' + stageJSON.data.image + '.xml', TEXT)))
+        if (Assets.exists(Paths.getPath('images/backgrounds/' + stageName + '/' + stageJSON.data.image + '.xml')))
             addSparrowSprite(defPath + stageName + stageJSON.data.image);
-        else if (Assets.exists(Paths.getPath('images/backgrounds/' + stageName + '/' + stageJSON.data.image + '.txt', TEXT)))
+        else if (Assets.exists(Paths.getPath('images/backgrounds/' + stageName + '/' + stageJSON.data.image + '.txt')))
             addPackerSprite(defPath + stageName + stageJSON.data.image);
         else
             addImgSprite(defPath + stageName + stageJSON.data.image);

@@ -52,6 +52,13 @@ class GameplaySettingsSubState extends OptionsState
 		false);
 		addOption(option);
 
+		var option:Option = new Option('Instant Respawns',
+		'Instantly respawning after death',
+		'instRespawn',
+		'bool',
+		true);
+		addOption(option);
+
 		var option:Option = new Option('Safe Frames',
 		'Changes how many frames you have for\nhitting a note earlier or late.',
 		'safeFrames',

@@ -1,11 +1,7 @@
 package;
 
-import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
 import PlayState;
 
 using StringTools;
@@ -114,12 +110,10 @@ class Strumline extends FlxSprite
 		else
 			alpha = OptionHandler.strumAlpha;
 
-		if (animation.finished)
+		if (animation.curAnim.name == 'confirm' && animation.finished)
 		{
-			animation.play('static');
 			centerOffsets();
-			offset.x -= 13;
-			offset.y -= 13;
+			animation.play('static');
 		}
 		super.update(elapsed);
 	}

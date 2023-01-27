@@ -1,6 +1,5 @@
 package;
 
-import animateatlas.AtlasFrameMaker;
 import flixel.math.FlxPoint;
 import flixel.graphics.frames.FlxFrame.FlxFrameAngle;
 import openfl.geom.Rectangle;
@@ -11,6 +10,7 @@ import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+import openfl.display3D.textures.Texture;
 import lime.utils.Assets;
 import flixel.FlxSprite;
 #if sys
@@ -27,7 +27,7 @@ using StringTools;
 
 class Paths
 {
-	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
+	inline public static var SOUND_EXT = "ogg";
 
 	public static var localTrackedAssets:Array<String> = [];
 
@@ -35,6 +35,87 @@ class Paths
 	static public function setCurrentLevel(name:String)
 	{
 		currentLevel = name.toLowerCase();
+	}
+
+	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];
+	public static var currentTrackedTextures:Map<String, Texture> = [];
+	public static var currentTrackedSounds:Map<String, Sound> = [];
+
+	public static function excludeAsset(key:String)
+	{
+		if (!dumpExclusions.contains(key))
+			dumpExclusions.push(key);
+	}
+
+	public static var dumpExclusions:Array<String> = [
+		'assets/music/freakyMenu.$SOUND_EXT',
+		'assets/music/breakfast.$SOUND_EXT',
+	];
+
+	/// haya I love you for the base cache dump I took to the max
+	public static function clearUnusedMemory()
+	{
+		// clear non local assets in the tracked assets list
+		var counter:Int = 0;
+		for (key in currentTrackedAssets.keys())
+		{
+			if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key))
+			{
+				var obj = currentTrackedAssets.get(key);
+				if (obj != null)
+				{
+					var isTexture:Bool = currentTrackedTextures.exists(key);
+					if (isTexture)
+					{
+						var texture = currentTrackedTextures.get(key);
+						texture.dispose();
+						texture = null;
+						currentTrackedTextures.remove(key);
+					}
+					@:privateAccess
+					if (openfl.Assets.cache.hasBitmapData(key))
+					{
+						openfl.Assets.cache.removeBitmapData(key);
+						FlxG.bitmap._cache.remove(key);
+					}
+					trace('removed $key, ' + (isTexture ? 'is a texture' : 'is not a texture'));
+					obj.destroy();
+					currentTrackedAssets.remove(key);
+					counter++;
+				}
+			}
+		}
+		trace('removed $counter assets');
+		// run the garbage collector for good measure lmfao
+		System.gc();
+	}
+
+	public static function clearStoredMemory(?cleanUnused:Bool = false)
+	{
+		// clear anything not in the tracked assets list
+		@:privateAccess
+		for (key in FlxG.bitmap._cache.keys())
+		{
+			var obj = FlxG.bitmap._cache.get(key);
+			if (obj != null && !currentTrackedAssets.exists(key))
+			{
+				openfl.Assets.cache.removeBitmapData(key);
+				FlxG.bitmap._cache.remove(key);
+				obj.destroy();
+			}
+		}
+
+		// clear all sounds that are cached
+		for (key in currentTrackedSounds.keys())
+		{
+			if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key) && key != null)
+			{
+				Assets.cache.clear(key);
+				currentTrackedSounds.remove(key);
+			}
+		}
+		// flags everything to be cleared out next unused memory clear
+		localTrackedAssets = [];
 	}
 
 	public static function getPath(file:String, type:AssetType, ?library:Null<String> = null)
@@ -156,6 +237,11 @@ class Paths
 		return Assets.getText(getPath(key, TEXT));
 	}
 
+	inline static public function offsetTxt(key:String, ?library:String)
+	{
+		return getPath('characters/$key.txt', TEXT, library);
+	}
+
 	inline static public function font(key:String)
 	{
 		return 'assets/fonts/$key';
@@ -174,6 +260,11 @@ class Paths
 		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
 	}
 
+	inline static public function getJsonData(key:String, ?library:String):FlxAtlasFrames
+	{
+		return FlxAtlasFrames.fromTexturePackerJson(image(key, library), file('images/$key.json', library));
+	}
+
 
 	inline static public function getPackerAtlas(key:String, ?library:String)
 	{
@@ -189,7 +280,6 @@ class Paths
 	}
 
 	// completely rewritten asset loading? fuck!
-	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];
 	public static function returnGraphic(key:String, ?library:String) {
 		var path = getPath('images/$key.png', IMAGE, library);
 		//trace(path);
@@ -202,11 +292,8 @@ class Paths
 			localTrackedAssets.push(path);
 			return currentTrackedAssets.get(path);
 		}
-		trace('oh no its returning null NOOOO');
 		return null;
 	}
-
-	public static var currentTrackedSounds:Map<String, Sound> = [];
 	public static function returnSound(path:String, key:String, ?library:String) {
 		// I hate this so god damn much
 		var gottenPath:String = getPath('$path/$key.$SOUND_EXT', SOUND, library);
