@@ -110,13 +110,15 @@ class ChartingState extends MusicBeatState
 
 	override function create()
 	{
+		Paths.clearStoredMemory();
+
 		curSection = lastSection;
 
 		FlxG.mouse.visible = true;
 
 		beatSnap.length == 3;
 
-		Conductor.rate == 0;
+		Conductor.rate = 0;
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFF8400FF;

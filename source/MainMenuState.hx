@@ -40,6 +40,9 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
+		
 		menusetting = Json.parse(Paths.getTextFromFile('data/setup/MenuSetup.json'));
 
 		#if desktop
@@ -187,10 +190,6 @@ class MainMenuState extends MusicBeatState
 					});
 				}
 			}
-		}
-
-		if (FlxG.keys.justPressed.SEVEN) {
-			FlxG.switchState(new JSONDataTest());
 		}
 
 		super.update(elapsed);

@@ -1,3 +1,5 @@
-CURRENT. Week 7 cutscene Json shit
+CURRENT: Mods!
+
+1.Fix oponent strumAnims
 2. pixel perfect week 6
 3. try some optimization

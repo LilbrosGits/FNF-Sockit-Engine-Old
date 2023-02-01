@@ -88,6 +88,8 @@ class ChartingState extends MusicBeatState
 
 	override function create()
 	{
+		Paths.clearStoredMemory();
+		
 		curSection = lastSection;
 
 		background = new FlxSprite().loadGraphic(Paths.image('menuDesat'));

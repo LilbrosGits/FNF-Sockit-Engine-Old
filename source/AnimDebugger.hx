@@ -48,6 +48,9 @@ class AnimDebugger extends MusicBeatState
 
 	override public function create()
 	{
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
+				
 		if (FlxG.sound.music != null)
 		{
 			FlxG.sound.music.stop();
